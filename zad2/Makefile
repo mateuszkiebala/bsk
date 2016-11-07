@@ -3,7 +3,7 @@ CFLAGS=-c -Wall
 LDFLAGS=-lpam -lpam_misc
 
 SOURCES=$(wildcard *.c)
-OBJECTS=$(SOURCES:.cpp=.o)
+OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=zad2
 
 all: $(SOURCES) $(EXECUTABLE)

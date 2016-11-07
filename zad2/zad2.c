@@ -43,6 +43,6 @@ int main(int argc, char const *argv[])
 
     pam_end(pamh, PAM_SUCCESS);
 
-    test();
+    // test();
     return run(stdin, stdout);
 }

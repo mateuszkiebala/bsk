@@ -70,4 +70,5 @@ int run(FILE *in, FILE *out) {
         }
     }
     cs_free(end);
+    return 1;
 }

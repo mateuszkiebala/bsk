@@ -1,16 +1,17 @@
-2.
+1.
 Add file zad2 to /etc/pam.d/
 #%PAM-1.0
 account required pam_access.so
+session required pam_limits.so
 
------------------------------------------------------------------
+Append this line to the end of /etc/security/limits.conf
+* hard nproc 5
 
+2.
 Create user2:
 useradd user2
 passwd user2
 chmod g=x,o=- /home/$user2
-
------------------------------------------------------------------
 
 Append to the end of /etc/security/access.conf
 + : user2 : tty2 tty3 tty4
