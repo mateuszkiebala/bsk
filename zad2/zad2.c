@@ -17,7 +17,7 @@ int main(int argc, char const *argv[])
     pam_handle_t* pamh = NULL;
     char *username = NULL;
     
-    int r = pam_start("SERVICE_NAME", username, &conv, &pamh);
+    int r = pam_start(SERVICE_NAME, username, &conv, &pamh);
     if (pamh == NULL || r != PAM_SUCCESS) {
         fprintf(stderr, "Error when starting: %d (%s)\n", r, pam_strerror(pamh, r));
         exit(1);

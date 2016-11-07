@@ -48,13 +48,11 @@ struct text* text_create() {
 
 void text_insert_first_row(struct text *t, struct c_string *row) {
     t->first_row = row;
-    row = NULL;
 }
 
 void text_insert_word(struct text *t, struct c_string* s) {
     struct pair *p = qa_insert(t->words, s);
     update_top_five(t, p);
-    s = NULL;
 }
 
 void text_display_top(const struct text *t) {

@@ -1,0 +1,31 @@
+2.
+Add file zad2 to /etc/pam.d/
+#%PAM-1.0
+account required pam_access.so
+
+-----------------------------------------------------------------
+
+Create user2:
+useradd user2
+passwd user2
+chmod g=x,o=- /home/$user2
+
+-----------------------------------------------------------------
+
+Append to the end of /etc/security/access.conf
++ : user2 : tty2 tty3 tty4
++ : ALL : tty4
+# All other users should be denied to get access from all sources.
+- : ALL : ALL
+
+3.
+Append to the end of /etc/security/time.conf
+sshd;*;*;Wd1100-1130
+
+Add as first line of /etc/pam.d/sshd
+account required pam_time.so
+
+4.
+Run visudo
+Append at the end of file:
+%user2 ALL=(root) /usr/bin/apt-get

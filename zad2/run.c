@@ -56,7 +56,9 @@ int run(FILE *in, FILE *out) {
             if (cs_cmp(row, end) == 0) {
                 text_display_top(t);
                 t = text_free(t);
-                row = cs_free(row);
+                if (row_cnt > 1) { // first row will be destroyed in text_free
+                    row = cs_free(row);
+                }
                 break;
             } else if (row_cnt > 1) {
                 row = cs_free(row);

@@ -12,12 +12,10 @@ struct text;
 /* Create new instance of text. */
 struct text* text_create();
 
-/* Insert first row of text.
-   Row becomes NULL. */
+/* Insert first row of text. */
 void text_insert_first_row(struct text *t, struct c_string *row);
 
-/* Add new word to text.
-   s becomes NULL. */
+/* Add new word to text. */
 void text_insert_word(struct text *t, struct c_string* s);
 
 /* Shows top 5 words with most occurence in text. */
