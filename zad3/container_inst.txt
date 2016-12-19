@@ -1,0 +1,22 @@
+I. Create and run container vsolabxx:
+    1. mkdir vsolabxx
+    2. touch Dockerfile
+    3. Add following lines to Dockerfile:
+        FROM ioft/i386-ubuntu
+        MAINTAINER Mateusz Kiebalaps
+        RUN apt-get update && apt-get install -y apache2
+        VOLUME ["/var/www/html"]
+        WORKDIR /var/www/html
+        ENV APACHE_RUN_USER www-data
+        ENV APACHE_RUN_GROUP www-data
+        ENV APACHE_PID_FILE /var/run/apache2.pid
+        ENV APACHE_RUN_DIR /var/run/apache2
+        ENV APACHE_LOCK_DIR /var/lock/apache2
+        ENV APACHE_LOG_DIR /var/log/apache2
+        RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
+        EXPOSE 80
+        CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]
+    4. Build container (being in vsolabxx directory):
+        docker build -t vsolabxx .
+    5. docker images (to see available images, there should be vsolabxx)
+    6. docker run -p 80:80 -t -i vsolabxx

@@ -1,0 +1,44 @@
+# Mateusz Kiebala 359758
+
+First change client_domain and server_domain in files:
+client_init.sh and guest_init.sh
+
+--------------------------------------------------------------------------------
+
+1) Run order:
+
+a) server machine
+    1. server_init.sh
+    2. guest_init.sh
+    3. guest_config.sh
+
+b) client machine
+    1. client_init.sh
+
+--------------------------------------------------------------------------------
+
+2) Server SSH configuration:
+
+1. Open /etc/ssh/sshd_config and do the following changes to sshd_config file.
+2. Ensure header "Protocol" looks like this:
+        Protocol 2
+3. Set: PermitRootLogin no
+4. Set:
+        ChallengeResponseAuthentication no
+        PasswordAuthentication no
+5. Append to the end of file:
+        Match User guest
+        PasswordAuthentication yes
+6. Restart SSH daemon service with command: sudo service ssh restart
+
+--------------------------------------------------------------------------------
+
+3) Copy and mount: run script copy_mount.sh
+
+--------------------------------------------------------------------------------
+
+4) PGP
+
+1. Create keys: gpg --gen-key
+2. Export public key to file
+    gpg --armour --output mk359758_pub_key --export mk359758@students.mimuw.edu.pl
