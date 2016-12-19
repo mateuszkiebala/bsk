@@ -1,0 +1,97 @@
+Docker installation:
+1. Downoload: http://launchpadlibrarian.net/221365773/docker.io_1.6.2~dfsg1-1ubuntu4~14.04.1_i386.deb
+
+2. Install: dpkg -i docker.io_1.6.2~dfsg1-1ubuntu4~14.04.1_i386.deb
+
+--------------------------------------------------------------------------------
+
+I. Create and run container vsolabxx:
+    1. mkdir vsolabxx
+    2. touch Dockerfile
+    3. mkdir bsk
+    4. create /bsk/index.html and index.html
+    5. Add following lines to Dockerfile:
+        FROM ioft/i386-ubuntu
+        MAINTAINER Mateusz Kiebala
+        RUN apt-get update && apt-get install -y apache2
+        ENV APACHE_RUN_USER www-data
+        ENV APACHE_RUN_GROUP www-data
+        ENV APACHE_PID_FILE /var/run/apache2.pid
+        ENV APACHE_RUN_DIR /var/run/apache2
+        ENV APACHE_LOCK_DIR /var/lock/apache2
+        ENV APACHE_LOG_DIR /var/log/apache2
+        RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
+
+        ADD bsk /var/www/html
+        ADD index.html /var/www/html
+
+        EXPOSE 80
+        CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]
+    6. Build container (being in vsolabxx directory):
+        docker build -t vsolabxx .
+    7. docker images (to see available images, there should be vsolabxx)
+    8. docker run -p 80:80 -t -i vsolabxx /bin/bash
+
+II.
+    1. solabxx machine (host machine): change line 127.0.0.1 localhost in /etc/hosts to line: 127.0.0.1 localhost vsolabxx.mimuw.edu.pl
+
+III.
+    1. Change file /usr/lib/ssl/misc/CA.sh: set CADAYS = 3652 # 10 years
+    2. run: /usr/lib/ssl/misc/CA.sh -newca
+    3. Fill with:
+        C = PL
+        ST = Mazowieckie
+        LN = Warsaw
+        ON = MIMUW
+        OU = BSK
+        CN = BSK Certification Authority 16
+        mail = ca@mimuw.edu.pl
+
+IV.
+    1. Change file /etc/ssl/openssl.cnf: set default_days = 1460 # 4 years
+    2. run: /usr/lib/ssl/misc/CA.sh -newreq
+    3. Fill with:
+        C = PL
+        ST = Mazowieckie
+        LN = Warsaw
+        ON = MIMUW
+        OU = BSK
+        CN = bsklabxx.mimuw.edu.pl
+        mail = bsk@mimuw.edu.pl
+    4. run: openssl rsa -in newkey.pem -out newkey.pem (https doesn't need password to use private key)
+
+V.
+    1. run: /usr/lib/ssl/misc/CA.sh -sign
+
+VI.
+    1. Copy /usr/lib/ssl/misc/newcert.pem and /usr/lib/ssl/misc/newkey.pem to vsolabxx directory on host machine
+    2. Create file: default-ssl.conf in vsolabxx directory:
+        <IfModule mod_ssl.c>
+            <VirtualHost _default_:443>
+                ServerAdmin webmaster@localhost
+                DocumentRoot /var/www/html/bsk
+        
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+    
+                # Enable/Disable SSL for this virtual host.
+                SSLEngine on
+    
+                SSLCertificateFile /etc/ssl/certs/newcert.pem
+                SSLCertificateKeyFile /etc/ssl/private/newkey.pem
+            
+            </VirtualHost>
+        </IfModule>
+    3. In vsolabxx directory add these lines to Dockerfile:
+        ADD newcert.pem /etc/ssl/certs
+        ADD newkey.pem /etc/ssl/private
+
+        RUN a2enmod ssl
+        RUN a2ensite default-ssl
+
+        ADD default-ssl.conf /etc/apache2/sites-available
+    4. apt-get install net-tools
+    5. check ip with ifconfig
+    6. update /etc/hosts on solabxx with ip bsklabxx.mimuw.edu.pl
+    7. In container: /etc/init.d/apache2 restart
+
