@@ -1,0 +1,10 @@
+proto tcp-client
+tls-client
+tls-auth vpn-shared-key 1
+dev tun
+ca username_certs/ca.crt
+cert username_certs/username.crt
+key username_certs/username.key
+ifconfig 10.0.0.2 10.0.0.1
+remote [server_ip] 1194
+comp-lzo

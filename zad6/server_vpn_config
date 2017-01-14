@@ -1,0 +1,12 @@
+iport 1194
+proto tcp-server
+tls-server
+tls-auth vpn-shared-key 0
+dev tun
+ca easy-rsa/keys/ca.crt
+cert easy-rsa/keys/vpn-server.crt
+key easy-rsa/keys/vpn-server.key
+dh easy-rsa/keys/dh2048.pem
+crl-verify easy-rsa/keys/crl.pem
+ifconfig 10.0.0.1 10.0.0.2
+comp-lzo

@@ -1,12 +1,43 @@
-1. Na maszynie klienta tworzymy CA:
-    /usr/lib/ssl/misc/CA.sh -newca
-    country=PL
-    state=Mazowieckie
-    location=Warsaw
-    organization=MIMUW
-    organizationalunit=SO_LAB
-    cn=CA_SO_LAB
-    email=ca@mimuw.edu.pl
+I. Install:
+    apt-get install openvpn easy-vpn
 
-2. Tworzymy certyfikat dla użytkownika: odpalamy skrypt cert_gen.sh
+II. Copy files:
+    1. cp -r /usr/share/easy-rsa /etc/openvpn/easy-rsa
+    2. copy: server_ca_gen.sh client_cert_gen.sh to /etc/openvpn/easy-rsa
+
+III. Create CA:
+    1. Go into directory /etc/openvpn/easy-rsa/
+    2. ./server_ca_gen.sh
+
+IV. Create certificate for user:
+    1. Go into directory: /etc/openvpn/easy-rsa/
+    2. ./client_cert_gen.sh [first_name last_name email client_ip]
+        client_ip is ip address where certificate should be sent after creation
+
+V. Create CRL list:
+    1. Go into directory: /etc/openvpn/easy-rsa/
+    2. Run ./add_revoked_users.sh [username_list]
+
+VI. Configure VPN server:
+    1. openvpn --genkey --secret vpn-shared-key
+    2. scp vpn-shared-key guest@so_lab:/home/guest/
+    3. copy server_vpn_config file to /etc/openvpn/
+
+VII. Configure VPN client:
+    1. mv /home/guest/vpn-shared-key /etc/openvpn/
+    2. copy client_vpn_config file to /etc/openvpn/
+    3. mv -r /home/guest/username_certs /etc/openvpn/
+
+VIII. Run VPN connection:
+    1. vpn-server# openvpn server-vpn-config
+    2. vpn-client# openvpn client-vpn-config
+
+** if something doesnt work check date on machine and 
+    check whether certificate's start date is greater than machine's one
+    if no change date with 'date --set 20:08:01'
+
+IX. Configurate firewall:
+    1. iptables -I INPUT -p tcp -s 192.168.0.0/16 --dport 1194 -j ACCEPT
+    2. iptables -P INPUT DROP
+    3. /etc/init.d/networking restart
 

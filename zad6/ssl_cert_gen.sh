@@ -8,7 +8,7 @@ email=$3
 #Details
 country=PL
 state=Mazowieckie
-location=Warsaw
+location=Warsaw_2
 organization=MIMUW
 organizationalunit=BSK
 
