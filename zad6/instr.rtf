@@ -1,5 +1,6 @@
 I. Install:
-    apt-get install openvpn easy-vpn
+    apt-get update
+    apt-get install openvpn easy-rsa vim
 
 II. Copy files:
     1. cp -r /usr/share/easy-rsa /etc/openvpn/easy-rsa
@@ -11,7 +12,9 @@ III. Create CA:
 
 IV. Create certificate for user:
     1. Go into directory: /etc/openvpn/easy-rsa/
-    2. ./client_cert_gen.sh [first_name last_name email client_ip]
+    2. ./client_cert_gen.sh [first_name last_name email]
+    3. copy certificates to client machine: 
+        ./copy_certs_to_client [first_name last_name client_ip]
         client_ip is ip address where certificate should be sent after creation
 
 V. Create CRL list:
@@ -29,8 +32,10 @@ VII. Configure VPN client:
     3. mv -r /home/guest/username_certs /etc/openvpn/
 
 VIII. Run VPN connection:
-    1. vpn-server# openvpn server-vpn-config
-    2. vpn-client# openvpn client-vpn-config
+    1. Go to /etc/openvpn/
+    2. vpn-server# openvpn server-vpn-config
+    3. Change username and server_ip in client-vpn-config
+    4. vpn-client# openvpn client-vpn-config
 
 ** if something doesnt work check date on machine and 
     check whether certificate's start date is greater than machine's one

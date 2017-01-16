@@ -6,12 +6,11 @@
 fname=$1
 lname=$2
 email=$3
-client_ip=$4
 domain=$fname$lname
 
-if [ -z "$fname" ] || [ -z "$lname" ] || [ -z "$email" ] || [ -z "$client_ip" ];
+if [ -z "$fname" ] || [ -z "$lname" ] || [ -z "$email" ];
 then
-    echo "Arguments not present."
+    echo "Arguments are not present."
     echo "Usage $0 [first_name last_name email client_ip]"
  
     exit 99
@@ -31,11 +30,3 @@ source ./vars
 
 mkdir "keys/"$domain"_certs"
 cp "keys/ca.crt" "keys/"$domain".crt" "keys/"$domain".key" "keys/"$domain"_certs"
-
-echo
-echo "---------------------------------------"
-echo "-----Copying certificate to client-----"
-echo "---------------------------------------"
-echo
-
-scp -r "keys/"$domain"_certs" guest@$client_ip:/home/guest/

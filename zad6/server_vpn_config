@@ -1,4 +1,4 @@
-iport 1194
+port 1194
 proto tcp-server
 tls-server
 tls-auth vpn-shared-key 0
